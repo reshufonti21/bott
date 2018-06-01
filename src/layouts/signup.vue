@@ -10,7 +10,8 @@
                         <p>Lets create a new account</p><br>
                         <input type="text" v-model="email" placeholder="Email"><br>
                         <input type="password" v-model="password" placeholder="Password"><br>
-                        <button v-on:click="signUp()">signup</button><br><br>
+                        <!-- <button v-on:click="signUp">signup</button><br><br> -->
+                         <q-btn @click="signup">signup</q-btn><br><br>
                         <p>Or go back to  <router-link to="/"> login</router-link></p>
                     </div>
                 </div>
@@ -21,28 +22,40 @@
 <script>
 import firebase from 'firebase'
 export default {
-	data: function () {
-		return {
-			email:'',
-			password:''
-		}
-	},
-  method: {
-		signUp: function(){
-			firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.email, this.password).then(
-				function (data) {
-					var database = firebase.database();
-					database.ref('users').set({
-							email: data.user.email,
-							role : 'Physician'
-					});
-					this.$q.notify({color: 'tertiary', textColor: 'white',message: 'Your account has been created!',  icon: 'thumb_up', position: 'bottom', timeout: Math.random() * 8000 + 3000})
-				},
-				function(err){
-					this.$q.notify({color: 'negative', textColor: 'white',message: 'Oops! ' + err.message,  icon: 'report_problem', position: 'bottom', timeout: Math.random() * 8000 + 3000})
-				}
-			)
-		}
+  name: 'signup',
+  data () {
+    return {
+      email: '',
+      password: ''
+    }
+  },
+  methods: {
+    signup: function(){
+      firebase.auth().createuserWithEmailAndPassword(this.email, this.password).then(
+        function (user) {
+          alert('your account has been created')
+        },
+        function (err) {
+          alert('oops. ' + err.message)
+// export default {
+//      name: 'signup',
+// 	  data () {
+// 		return {
+//           email:'',
+//           password:''
+// 		}
+// 	},
+//   method: {
+// 		signup: function(){
+//             firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(
+//             function (user) {
+//             alert('you account has been created')
+//             },
+//             function (err) {
+//             alert('oops. ' + err.message)
+            }
+            )
+        }	
 	}
 }
 </script>

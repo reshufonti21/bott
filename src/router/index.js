@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import firebase from 'firebase'
 import routes from './routes'
+import vuefire from 'VueFire'
 
 
 var config = {
@@ -15,6 +16,7 @@ var config = {
 firebase.initializeApp(config)
 
 Vue.use(VueRouter)
+Vue.use(vuefire)
 
 const Router = new VueRouter({
   /*
@@ -31,5 +33,6 @@ const Router = new VueRouter({
   scrollBehavior: () => ({ y: 0 }),
   routes
 })
+
 
 export default Router

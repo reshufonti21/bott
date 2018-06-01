@@ -1,6 +1,7 @@
 <template>
     <q-layout>
-        <q-page-container>
+        <q-layout-header class="toolbar"></q-layout-header>
+        <q-page-container class="login-container">
             <div class="row">
                 <div class="img">
                     <router-link to="/"><img src="assets/img/rrr.gif" alt=""></router-link>
@@ -8,8 +9,10 @@
                 <div class="login">
                     <input type="text" v-model="email" placeholder="Email"><br>
                     <input type="password" v-model="password" placeholder="Password"><br>
-                    <button v-on:click="login()">Login</button><br><br>
-                    <p>You don't have an account? You can <router-link to="/signup">Create one</router-link></p>
+                    <!-- <button v-on:click="login()">login</button><br><br> -->
+                    <q-btn @click="login">login</q-btn><br><br>
+                    <!-- <button v-on:click="login()"><router-link to="/dashboard">login</router-link></button><br><br> -->
+                     <p>You don't have an account? You can  <router-link to="/signup">Create one</router-link></p>
                 </div>
             </div>
         </q-page-container>
@@ -26,11 +29,17 @@ export default {
       password: ''
     }
   },
-  method: {
+  methods: {
     login: function(){
-      firebase.auth().loginWithEmailAndPassword(this.email, this.password).then(
+      firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
         function (user) {
           alert('you are logged in')
+          firebase.auth().onAuthStateChanged(user => {
+            if(user) {
+             window.location = 'dashboard'; //After successful login, user will be redirected to home.html
+            //   window.location.href = "http://localhost:8080";
+            }
+            });
         },
         function (err) {
           alert('oops. ' + err.message)

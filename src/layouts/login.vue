@@ -34,11 +34,10 @@ export default {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
         function (user) {
           alert('you are logged in')
-          firebase.auth().onAuthStateChanged(user => {
-            if(user) {
-             window.location = 'dashboard'; //After successful login, user will be redirected to home.html
-            //   window.location.href = "http://localhost:8080";
-            }
+            firebase.auth().onAuthStateChanged(user => {
+                if(user) {
+                    
+                }
             });
         },
         function (err) {

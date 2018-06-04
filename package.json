@@ -31,7 +31,8 @@
   },
   "devDependencies": {
     "less-loader": "^4.1.0",
-    "quasar-cli": "^0.16.0"
+    "quasar-cli": "^0.16.0",
+    "vuetify": "^1.0.18"
   },
   "engines": {
     "node": ">= 8.9.0",

@@ -4,29 +4,24 @@ import firebase from 'firebase'
 export default [
   {
     path: '/',
-    component: () => import('layouts/login'),
+    component: () => import('layouts/home'),
     children: [
-      { path: '', component: () => import('pages/index') }
+      { path: '/dashboard', component: () => import('pages/dashboard'), meta: {requiresAuth: true, base: 'root' } },
+      { path: '/activity', component: () => import('pages/activity'), meta: {requiresAuth: true, base: 'root' } }
     ],
-    meta: {requiresAuth: false, base: 'auth'},
-  },
-  {
-    path: '*',
-    redirect: '/login',
+    meta: {requiresAuth: true},
   },
   {
     path: '/signup',
     name: 'signup',
     component: () => import('layouts/signup'),
-    meta: {requiresAuth: false, base: 'auth'},
+    meta: {requiresAuth: false, base: 'auth'}
   },
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: () => import('layouts/dashboard'),
-    meta: {
-      requiresAuth: true
-     }
+    path: '/login',
+    name: 'login',
+    component: () => import('layouts/login'),
+    meta: {requiresAuth: false, base: 'auth'}
   },
   { // Always leave this as last one
     path: '*',

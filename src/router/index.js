@@ -1,11 +1,18 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import firebase from 'firebase'
+import firebase from "firebase";
 import routes from './routes'
+import firestore from 'firebase/firestore'
 import vuefire from 'VueFire'
 
+let queryReturn = firebase.firestore.QuerySnapshot;
 
-var config = {
+export const dataStore = {
+  logMe: (message) => console.log(message),
+  person: (id) => console.log(id)
+};
+
+const config = {
   apiKey: 'AIzaSyAqbN1Gz6HPeg9bX4Qkh6megFF5hlNMBrg',
   authDomain: 'bott-86c91.firebaseapp.com',
   databaseURL: 'https://bott-86c91.firebaseio.com',
@@ -13,26 +20,41 @@ var config = {
   storageBucket: 'bott-86c91.appspot.com',
   messagingSenderId: '905253786526'
 }
+
 firebase.initializeApp(config)
+
+let db = firebase.database();
+let vm = {}; 
+
+firebase.auth().onAuthStateChanged(firebaseUser => {
+  vm.currentUser = firebaseUser;
+  dataStore.logMe(vm.currentUser);
+});
 
 Vue.use(VueRouter)
 Vue.use(vuefire)
 
-const Router = new VueRouter({
-  /*
-   * NOTE! Change Vue Router mode from quasar.conf.js -> build -> vueRouterMode
-   *
-   * When going with "history" mode, please also make sure "build.publicPath"
-   * is set to something other than an empty string.
-   * Example: '/' instead of ''
-   */
-
-  // Leave as is and change from quasar.conf.js instead!
+let Router = new VueRouter({
   mode: process.env.VUE_ROUTER_MODE,
   base: process.env.VUE_ROUTER_BASE,
   scrollBehavior: () => ({ y: 0 }),
   routes
 })
 
+Router.beforeEach((to, from, next) => {
+  firebase.auth().onAuthStateChanged((user) => {
+    let currentUser = vm.currentUser;
+    let requiresAuth = to.meta.requiresAuth;
+    let path = to.path;
+    let currentRoute = window.location.pathname;
+    if(requiresAuth && !currentUser){
+      next('login')
+    }else if(!requiresAuth && currentUser) {
+      next('dashboard')
+    }else{
+      next()
+    } 
+  });
+})
 
 export default Router

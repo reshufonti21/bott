@@ -79,7 +79,9 @@ module.exports = function (ctx) {
         'QTimeline',
         'QTimelineEntry',
         'QAutocomplete',
-        'QSearch'
+        'QSearch',
+        'QBtnDropdown',
+        'QItemTile'
       ],
       directives: [
         'Ripple'

@@ -7,12 +7,13 @@
                     <q-card-main>
                         <div class="row">
                             <div class="col-12">
-                                <q-btn class="control-btn" @click="deleteClient">Delete Client</q-btn>
+                                <q-btn class="control-btn" @click="deleteActivity">Delete Activity</q-btn>
                             </div>
                         </div>
-                        <q-table :data="tableData" :columns="columns" row-key="name" color="#008080;" selection="multiple" :selected.sync="selected">
-                        </q-table>
-                          <q-btn round class="add-btn size-25 btn-absolute" icon="add" @click="addClient"/>
+                        <q-table :data="tableData" :columns="columns" row-key="name" color="secondary" selection="multiple" :selected.sync="selected">
+                            </q-table>
+                           
+                          <q-btn round class="add-btn size-25 btn-absolute" icon="add" @click="addActivity"/>
                      </q-card-main>
                 </q-card>
             </div>
@@ -24,15 +25,30 @@
                     </q-card-title>
                     <q-card-main class="padded-form">
                         <div class="form">
-                            <q-input v-model="client.name" placeholder="Client Name"/>
-                            <br/>
-                            <q-input v-model="client.principleContact" placeholder="Priciple Contact"/>
-                            <br/>
-                            <q-input v-model="client.address" placeholder="Address"/>
-                            <br/>
-                            <q-input v-model="client.phone" placeholder="Phone"/>
+                            <q-input v-model="activity.name" placeholder="Activity Name"/>
+                            <br/><br>
+                            
+                            <q-btn-dropdown label="type">
+                            <q-list link>
+                                <q-item>
+                                <q-item-main>
+                                    <q-item-tile label>issue</q-item-tile>
+                                    <q-item-tile label>conflict</q-item-tile>
+                                    <q-item-tile label>commit</q-item-tile>
+                                </q-item-main>
+                                </q-item>
+                            </q-list>
+                            </q-btn-dropdown>
+                                <!-- <select  v-model="activity.type" placeholder="type">
+                                <option>Activity type</option>
+                            <option value="issue">Issue</option>
+                                <option value="conflict">conflict</option>
+                                <option value="commit">commit</option>
+                        </select> -->
+                            <br/><br>
+                            <q-input v-model="activity.price" placeholder="price"/>
                         </div>
-                        <q-btn class="save-btn" label="SUBMIT" @click="saveClient"/>
+                        <q-btn class="save-btn" label="SUBMIT" @click="saveActivity"/>
                     </q-card-main>
                 </q-card>
             </div>
@@ -47,39 +63,24 @@ export default {
      data: () => ({
             selected: [],
             columns: [
-                {
-                    name: 'month',
-                    label: 'Month',
-                    align: 'left',
-                    field: 'month',
-                    sortable: true,
-                },
                   {
-                    name: 'name',
+                    name: ' name',
                     required: true,
-                    label: 'Client Name',
+                    label: ' Name',
                     align: 'left',
                     field: 'name',
                     sortable: true
                 },
                 {
-                    name: 'conversationPerMonth',
+                    name: 'type',
                     required: true,
-                    label: 'Conversations Per Month',
+                    label: 'Activity type',
                     align: 'left',
-                    field: 'conversationPerMonth',
+                    field: 'type',
                     sortable: true
                 },
                 {
-                    name: 'bounceRate',
-                    required: true,
-                    label: 'Bounce Rate',
-                    align: 'left',
-                    field: 'bounceRate',
-                    sortable: true
-                },
-                {
-                    name: 'price',
+                    name: 'activity price',
                     required: true,
                     label: '$$',
                     align: 'left',
@@ -90,39 +91,69 @@ export default {
             tableData: [
                 
             ],
-            client: {},
+            activity: {},
             showAdd: false
      }),
      methods: {
-          addClient: function(){
+          addActivity: function(){
                 let vm = this;
                 vm.showAdd = true;
             },
-            saveClient: function(){
+            saveActivity: function(){
                 let database = firebase.database();
                 let vm = this;
-                let months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-                let now = new Date();
-                let thisMonth = months[now.getMonth()];
-                vm.client.conversationPerMonth = 0;
-                vm.client.bounceRate = 0;
-                vm.client.month = thisMonth;
-                vm.client.price = 0;
-                database.ref('clients').push(vm.client).then(
+                // let months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                // let now = new Date();
+                // let thisMonth = months[now.getMonth()];
+                // vm.activity.month = thisMonth;
+                vm.activity.name = "string";
+                vm.activity.type = type;
+                vm.activity.price = 100;
+                database.ref('activities').push(vm.activity).then(
                     function(response){
                         vm.showAdd = false;
-                        vm.client = {};
+                        vm.activity= {};
                         vm.tableData = [];
-                        vm.getClients();
+                        vm.getActivity();
                     },
                     function(err){
                         vm.$q.notify({color: 'negative', textColor: 'white',message: 'Oops! ' + err.message,  icon: 'report_problem', position: 'bottom', timeout: Math.random() * 8000 + 3000})
                     }
                 );
             },
+              getActivity: function(){
+                let database = firebase.database();
+                let vm = this;
+                vm.tableData = [];
+                database.ref('activities').orderByValue().on('value', function(snapshot) {
+                    snapshot.forEach(function(data){
+                        vm.tableData.push(data.val());
+                    });
+                });
+            },
+              deleteActivity: function(){
+                let database = firebase.database();
+                let vm = this;
+                _.each(vm.selected, function(value){
+                    database.ref('activities').orderByChild('name').equalTo(value.name).on('value', function(snapshot) {
+                        let key = _.findKey(snapshot.val())
+                        if(key){
+                            database.ref('activities').child(key).remove();
+                        }
+                    });
+                });
+                vm.selected = [];
+                vm.getActivity();
+            },
+              goToConfigure: function(row){
+                let vm = this;
+                vm.$router.push({ name: 'client-workflow-add', params: {name: _.snakeCase(row.name)} });
+            }
+        },
+        created(){
+            this.getActivity()
+        }
 
-     }
-    
 }
 </script>
 <style>
@@ -168,6 +199,7 @@ export default {
     .client-add .size-20{
         width: 20px;
         height: 20px;
+      
     }
     .client-add .size-10{
         width: 10px;
@@ -183,33 +215,43 @@ export default {
     }
     .client-add .row .col-6:first-child .q-card{
         margin-right: 15px;
+       
     }
     .client-add .row .col-6:last-child .q-card{
         margin-left: 15px;
+          
     }
     .client-add .q-table-container {
         box-shadow: none;
+        
     }
     .client-add .q-table th, 
     .client-add .q-table td{
         padding: 5px 10px;
+        
     }
     .client-add .q-table thead tr,
     .client-add .q-table tbody tr
     {
         height:30px;
+       
     }
     .client-add .q-table tbody td{
         height:30px;
+         
     }
     .client-add .q-table thead tr{
         background: #dcdfff;
+         background-color: #008080;
+        
     }
     .client-add .q-table tbody tr:nth-child(odd){
         background: #fff;
+        
     }
     .client-add .q-table tbody tr:nth-child(even){
         background: #dcdfff;
+         background-color: #008080;
     }
 </style>
 

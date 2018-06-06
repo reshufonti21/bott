@@ -55,6 +55,7 @@ module.exports = function (ctx) {
         'QItem',
         'QItemMain',
         'QItemSide',
+        'QItemSeparator',
         'QCard',
         'QCardTitle',
         'QCardMain',
@@ -81,8 +82,9 @@ module.exports = function (ctx) {
         'QAutocomplete',
         'QSearch',
         'QBtnDropdown',
-        'QItemTile'
-      ],
+        'QItemTile',
+        'QBtnGroup'
+        ],
       directives: [
         'Ripple'
       ],

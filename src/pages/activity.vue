@@ -1,3 +1,4 @@
+
 <template>
     <q-page padding class="client-add " >
         <h4 class="page-header">Activity</h4>
@@ -27,24 +28,30 @@
                         <div class="form">
                             <q-input v-model="activity.name" placeholder="Activity Name"/>
                             <br/><br>
-                            
-                            <q-btn-dropdown label="type">
-                            <q-list link>
-                                <q-item>
+                            <!-- <q-btn-group>
+                            <q-btn-dropdown rounded  label="Type" split  v-model="activity.type">
+                                <q-list link>
+                                <q-item v-close-overlay>
                                 <q-item-main>
-                                    <q-item-tile label>issue</q-item-tile>
-                                    <q-item-tile label>conflict</q-item-tile>
-                                    <q-item-tile label>commit</q-item-tile>
+                                <q-item-tile label>issue</q-item-tile>
                                 </q-item-main>
                                 </q-item>
-                            </q-list>
+                               
+                                <q-item v-close-overlay>
+                                <q-item-main>
+                                <q-item-tile label>conflict</q-item-tile>
+                                </q-item-main>
+                                </q-item>
+                                <q-item v-close-overlay>
+                                <q-item-main>
+                                <q-item-tile label>commit</q-item-tile>
+                                </q-item-main>
+                                </q-item>
+                                </q-list>
                             </q-btn-dropdown>
-                                <!-- <select  v-model="activity.type" placeholder="type">
-                                <option>Activity type</option>
-                            <option value="issue">Issue</option>
-                                <option value="conflict">conflict</option>
-                                <option value="commit">commit</option>
-                        </select> -->
+                            </q-btn-group>
+                              -->
+                              <q-select no-icon v-model="activity.type" :options="typeNames" class="entity-property-text"/>
                             <br/><br>
                             <q-input v-model="activity.price" placeholder="price"/>
                         </div>
@@ -56,7 +63,8 @@
     </q-page>
 </template>
 <script>
- import lodash from 'lodash';   
+import Vue from 'vue';
+import lodash from 'lodash';   
 import firebase from 'firebase';
 import { Notify } from 'quasar'
 export default {
@@ -92,6 +100,20 @@ export default {
                 
             ],
             activity: {},
+            typeNames: [
+                {
+                    value:'issue',
+                    label: 'Issue'
+                },
+                {
+                    value:'commit',
+                    label: 'Commit'
+                },
+                 {
+                    value:'conflict',
+                    label: 'conflict'
+                }
+            ],
             showAdd: false
      }),
      methods: {
@@ -102,13 +124,6 @@ export default {
             saveActivity: function(){
                 let database = firebase.database();
                 let vm = this;
-                // let months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-                // let now = new Date();
-                // let thisMonth = months[now.getMonth()];
-                // vm.activity.month = thisMonth;
-                vm.activity.name = "string";
-                vm.activity.type = type;
-                vm.activity.price = 100;
                 database.ref('activities').push(vm.activity).then(
                     function(response){
                         vm.showAdd = false;

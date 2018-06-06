@@ -31,7 +31,8 @@ export default {
   },
   methods: {
     signup: function(){
-      firebase.auth().createuserWithEmailAndPassword(this.email, this.password).then(
+          firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.email, this.password).then(
+    //   firebase.auth().createuserWithEmailAndPassword(this.email, this.password).then(
         function (user) {
           alert('your account has been created')
         },

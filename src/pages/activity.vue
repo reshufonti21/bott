@@ -1,4 +1,3 @@
-
 <template>
     <q-page padding class="client-add " >
         <h4 class="page-header">Activity</h4>
@@ -12,9 +11,9 @@
                             </div>
                         </div>
                         <q-table :data="tableData" :columns="columns" row-key="name" color="secondary" selection="multiple" :selected.sync="selected">
-                            </q-table>
-                           
-                          <q-btn round class="add-btn size-25 btn-absolute" icon="add" @click="addActivity"/>
+                            <i aria-hidden="true" class="q-icon material-icons"></i>
+                        </q-table>
+                        <q-btn round class="add-btn size-25 btn-absolute" icon="add" @click="addActivity"/>
                      </q-card-main>
                 </q-card>
             </div>
@@ -26,150 +25,137 @@
                     </q-card-title>
                     <q-card-main class="padded-form">
                         <div class="form">
-                            <q-input v-model="activity.name" placeholder="Activity Name"/>
+                            <q-input v-model="activity.name" placeholder=" Name"/>
                             <br/><br>
-                            <!-- <q-btn-group>
-                            <q-btn-dropdown rounded  label="Type" split  v-model="activity.type">
-                                <q-list link>
-                                <q-item v-close-overlay>
-                                <q-item-main>
-                                <q-item-tile label>issue</q-item-tile>
-                                </q-item-main>
-                                </q-item>
-                               
-                                <q-item v-close-overlay>
-                                <q-item-main>
-                                <q-item-tile label>conflict</q-item-tile>
-                                </q-item-main>
-                                </q-item>
-                                <q-item v-close-overlay>
-                                <q-item-main>
-                                <q-item-tile label>commit</q-item-tile>
-                                </q-item-main>
-                                </q-item>
-                                </q-list>
-                            </q-btn-dropdown>
-                            </q-btn-group>
-                              -->
-                              <q-select no-icon v-model="activity.type" :options="typeNames" class="entity-property-text"/>
+                            <q-select v-model="activity.type" :options="typeNames" class="entity-property-text"/>
                             <br/><br>
                             <q-input v-model="activity.price" placeholder="price"/>
-                        </div>
+                           </div>
                         <q-btn class="save-btn" label="SUBMIT" @click="saveActivity"/>
+                        <!-- <ul class="errors">
+                        <li v-show="!validation.name">Name cannot be empty.</li>
+                        <li v-show="!validation.email">Please provide a valid email address.</li>
+                       </ul> -->
                     </q-card-main>
                 </q-card>
             </div>
         </div>
     </q-page>
+     
 </template>
 <script>
-import Vue from 'vue';
 import lodash from 'lodash';   
 import firebase from 'firebase';
 import { Notify } from 'quasar'
-export default {
-     data: () => ({
-            selected: [],
-            columns: [
-                  {
-                    name: ' name',
-                    required: true,
-                    label: ' Name',
-                    align: 'left',
-                    field: 'name',
-                    sortable: true
-                },
-                {
-                    name: 'type',
-                    required: true,
-                    label: 'Activity type',
-                    align: 'left',
-                    field: 'type',
-                    sortable: true
-                },
-                {
-                    name: 'activity price',
-                    required: true,
-                    label: '$$',
-                    align: 'left',
-                    field: 'price',
-                    sortable: true
-                }
-            ],
-            tableData: [
-                
-            ],
-            activity: {},
-            typeNames: [
-                {
-                    value:'issue',
-                    label: 'Issue'
-                },
-                {
-                    value:'commit',
-                    label: 'Commit'
-                },
-                 {
-                    value:'conflict',
-                    label: 'conflict'
-                }
-            ],
-            showAdd: false
-     }),
-     methods: {
-          addActivity: function(){
-                let vm = this;
-                vm.showAdd = true;
-            },
-            saveActivity: function(){
-                let database = firebase.database();
-                let vm = this;
-                database.ref('activities').push(vm.activity).then(
-                    function(response){
-                        vm.showAdd = false;
-                        vm.activity= {};
-                        vm.tableData = [];
-                        vm.getActivity();
-                    },
-                    function(err){
-                        vm.$q.notify({color: 'negative', textColor: 'white',message: 'Oops! ' + err.message,  icon: 'report_problem', position: 'bottom', timeout: Math.random() * 8000 + 3000})
-                    }
-                );
-            },
-              getActivity: function(){
-                let database = firebase.database();
-                let vm = this;
-                vm.tableData = [];
-                database.ref('activities').orderByValue().on('value', function(snapshot) {
-                    snapshot.forEach(function(data){
-                        vm.tableData.push(data.val());
-                    });
-                });
-            },
-              deleteActivity: function(){
-                let database = firebase.database();
-                let vm = this;
-                _.each(vm.selected, function(value){
-                    database.ref('activities').orderByChild('name').equalTo(value.name).on('value', function(snapshot) {
-                        let key = _.findKey(snapshot.val())
-                        if(key){
-                            database.ref('activities').child(key).remove();
-                        }
-                    });
-                });
-                vm.selected = [];
-                vm.getActivity();
-            },
-              goToConfigure: function(row){
-                let vm = this;
-                vm.$router.push({ name: 'client-workflow-add', params: {name: _.snakeCase(row.name)} });
-            }
-        },
-        created(){
-            this.getActivity()
-        }
 
-}
+export default {
+    data: () => ({
+        tableData: [],
+        selected: [],
+            activity: {},
+        columns: [
+                {
+                name: ' name',
+                required: true,
+                label: ' Name',
+                align: 'left',
+                field: 'name',
+                sortable: true,
+            
+            },
+            {
+                name: 'type',
+                required: true,
+                label: 'Activity type',
+                align: 'left',
+                field: 'type',
+                sortable: true
+            },
+            {
+                name: 'activity price',
+                required: true,
+                label: '$$',
+                align: 'left',
+                field: 'price',
+                sortable: true
+            },
+                        
+        ],
+        typeNames: [
+            {
+                value:'issue',
+                label: 'Issue'
+            },
+            {
+                value:'commit',
+                label: 'Commit'
+            },
+                {
+                value:'conflict',
+                label: 'conflict'
+            }
+        ],
+        showAdd: false
+    }),
+    methods: {
+        addActivity: function(){
+            let vm = this;
+            vm.showAdd = true;
+        },
+        saveActivity: function(){
+            let database = firebase.database();
+            let vm = this;
+            database.ref('activities').push(vm.activity).then(
+                function(response){
+                    vm.showAdd = false;
+                    vm.activity= {};
+                    vm.tableData = [];
+                    vm.getActivity();
+                },
+                function(err){
+                    vm.$q.notify({color: 'negative', textColor: 'white',message: 'Oops! ' + err.message,  icon: 'report_problem', position: 'bottom', timeout: Math.random() * 8000 + 3000})
+                }
+            );
+        },
+        getActivity: function(){
+            let database = firebase.database();
+            let vm = this; 
+            vm.tableData = [];
+            database.ref('activities').orderByValue().on('value', function(snapshot) {
+                snapshot.forEach(function(data){
+                    vm.tableData.push(data.val());
+                });
+            });
+        },
+        editActivity: function(){
+            let database = firebase.database();
+            let vm = this;
+            database.ref('activities').orderByChild('name').equalTo(vm.selected[0].name).on('value', function(snapshot) {
+                let key = _.findKey(snapshot.val())
+                if(key){
+                    database.ref('activities').child(key).update(vm.selected[0]);
+                }
+            });
+        },
+        deleteActivity: function(){
+            let database = firebase.database();
+            let vm = this;
+            _.each(vm.selected, function(value){
+                database.ref('activities').orderByChild('name').equalTo(value.name).on('value', function(snapshot) {
+                    let key = _.findKey(snapshot.val())
+                    if(key){
+                        database.ref('activities').child(key).remove();
+                    }
+                });
+            });
+            vm.selected = [];
+            vm.getActivity();
+        }
+    },
+    created: function(){
+        this.getActivity();
+    },
+} 
 </script>
 <style>
   .client-add .q-card-container{

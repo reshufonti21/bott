@@ -3,17 +3,17 @@
          <!-- <q-layout-header>SIGN UP</q-layout-header> -->
             <q-page-container>
                 <div class="row">
-                    <div class="title">
+                     <div class="title">
                         <p>SIGN UP</p>
-                    </div>
-                    <div class="signup">
+                     </div>
+                     <div class="signup">
                         <p>Lets create a new account</p><br>
                         <input type="text" v-model="email" placeholder="Email"><br>
                         <input type="password" v-model="password" placeholder="Password"><br>
                         <!-- <button v-on:click="signUp">signup</button><br><br> -->
                          <q-btn @click="signup">signup</q-btn><br><br>
                         <p>Or go back to  <router-link to="/"> login</router-link></p>
-                    </div>
+                     </div>
                 </div>
             </q-page-container>
     </q-layout>
@@ -32,28 +32,12 @@ export default {
   methods: {
     signup: function(){
           firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.email, this.password).then(
-    //   firebase.auth().createuserWithEmailAndPassword(this.email, this.password).then(
+      //   firebase.auth().createuserWithEmailAndPassword(this.email, this.password).then(
         function (user) {
           alert('your account has been created')
         },
         function (err) {
           alert('oops. ' + err.message)
-// export default {
-//      name: 'signup',
-// 	  data () {
-// 		return {
-//           email:'',
-//           password:''
-// 		}
-// 	},
-//   method: {
-// 		signup: function(){
-//             firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(
-//             function (user) {
-//             alert('you account has been created')
-//             },
-//             function (err) {
-//             alert('oops. ' + err.message)
             }
             )
         }	

@@ -4,7 +4,7 @@ module.exports = function (ctx) {
   return {
     // app plugins (/src/plugins)
     plugins: [
-    ],
+         ],
     css: [
       'app.styl'
     ],
@@ -13,7 +13,7 @@ module.exports = function (ctx) {
       'material-icons' // optional, you are not bound to it
       // 'ionicons',
       // 'mdi',
-      // 'fontawesome'
+      // 'fontawesome', 
     ],
     supportIE: false,
     build: {
@@ -83,7 +83,8 @@ module.exports = function (ctx) {
         'QSearch',
         'QBtnDropdown',
         'QItemTile',
-        'QBtnGroup'
+        'QBtnGroup',
+        'QActionSheet'
         ],
       directives: [
         'Ripple'

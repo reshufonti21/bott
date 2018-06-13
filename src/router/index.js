@@ -22,7 +22,6 @@ const config = {
 }
 
 firebase.initializeApp(config)
-
 let db = firebase.database();
 let vm = {}; 
 
